@@ -1,44 +1,17 @@
 //******************************************************************************************
-//  File: ST_Anything_Doors_Windows.ino
-//  Authors: Dan G Ogorchock & Daniel J Ogorchock (Father and Son)
+//  File: ST_Anything_DSC_Alarm.ino
+//  Author: James Saint-Rossy
+//  Based on: ST_Anything_Doors_Windows by Dan G Ogorchock & Daniel J Ogorchock (Father and Son)
 //
 //  Summary:  This Arduino Sketch, along with the ST_Anything library and the revised SmartThings 
-//            library, demonstrates the ability of one Arduino + SmartThings Shield to 
-//            implement a multi input/output custom device for integration into SmartThings.
-//            The ST_Anything library takes care of all of the work to schedule device updates
-//            as well as all communications with the SmartThings Shield.
+//            library, connects a wired DSC Alarm panel to a SmartThings controller.  While specifically
+//            Written for a DSC power series pannel (PC1555) it should work with any system that uses
+//            Wired contact switches.
 //
-//            ST_Anything_Doors_Example implements the following:
-//              - 13 x Contact Sensor devices (used to monitor magnetic door/windows sensors)
-//              - 1 x Motion device (used to detect motion)
-//
-//            During the development of this re-usable library, it became apparent that the 
-//            Arduino UNO R3's very limited 2K of SRAM was very limiting in the number of 
-//            devices that could be implemented simultaneously.  A tremendous amount of effort
-//            has gone into reducing the SRAM usage, including siginificant improvements to
-//            the SmartThings Arduino library.  The SmartThings library was also modified to
-//            include support for using Hardware Serial port(s) on the UNO, MEGA, and Leonardo.
-//            During testing, it was determined that the Hardware Serial ports provide much
-//            better performance and reliability versus the SoftwareSerial library.  Also, the
-//            MEGA 2560's 8K of SRAM is well worth the few extra dollars to save your sanity
-//            versus always running out of SRAM on the UNO R3.  The MEGA 2560 also has 4 Hardware
-//            serial ports (i.e. UARTS) which makes it very easy to use Hardware Serial instead 
-//            of SoftwareSerial, while still being able to see debug data on the USB serial 
-//            console port (pins 0 & 1).  
-//
-//            Note: We did not have a Leonardo for testing, but did fully test on UNO R3 and 
-//            MEGA 2560 using both SoftwareSerial and Hardware Serial communications to the 
-//            Thing Shield.
+//            ST_Anything_DSC_Alarm implements the following:
+//              - 14 x Contact Sensor devices (door/window/PIR contact switches)
 //    
-//  Change History:
-//
-//    Date        Who            What
-//    ----        ---            ----
-//    2015-01-03  Dan & Daniel   Original Creation
-//    2015-01-07  Dan Ogorchock  Modified for Door Monitoring and Garage Door Control
-//    2015-03-28  Dan Ogorchock  Removed RCSwitch #include now that the libraries are split up
-//    2015-03-31  Daniel O.      Memory optimizations utilizing progmem
-//    2015-10-31  Dan Ogorchock  Revised for a specific user request
+//  Change History: See Github logs for this project
 //
 //******************************************************************************************
 
@@ -58,7 +31,6 @@
 #include <InterruptSensor.h> //Generic Interrupt "Sensor" Class, waits for change of state on digital input 
 #include <Everything.h>      //Master Brain of ST_Anything library that ties everything together and performs ST Shield communications
 
-#include <IS_Motion.h>       //Implements an Interrupt Sensor (IS) to detect motion via a PIR sensor
 #include <IS_Contact.h>      //Implements an Interrupt Sensor (IS) to monitor the status of a digital input pin
 
 //******************************************************************************************
@@ -75,26 +47,21 @@
 #define PIN_3_RESERVED               3  //reserved by ThingShield for Serial communications
 #define PIN_6_RESERVED               6  //reserved by ThingShield (possible future use?)
 
-//Window Pins
-#define PIN_CONTACT_KITCHEN_WINDOW1  4
-#define PIN_CONTACT_KITCHEN_WINDOW2  5
-#define PIN_CONTACT_KITCHEN_WINDOW3  7
-#define PIN_CONTACT_MASTER_WINDOW1   8
-#define PIN_CONTACT_MASTER_WINDOW2   9
-#define PIN_CONTACT_OFFICE_WINDOW1   10
-#define PIN_CONTACT_OFFICE_WINDOW2   11
-#define PIN_CONTACT_GUEST_WINDOW1    12
-#define PIN_CONTACT_GUEST_WINDOW2    13
-
-
-//House Door Pins
-#define PIN_CONTACT_FRONT_DOOR       A1
-#define PIN_CONTACT_KITCHEN_DOOR     A2
-#define PIN_CONTACT_GARAGE_DOOR      A3
-#define PIN_CONTACT_BEDROOM_DOOR     A4
-
-//motion pins
-#define PIN_MOTION                   A5
+//Contact Pins
+#define PIN_CONTACT_ZONE1  4
+#define PIN_CONTACT_ZONE2  5
+#define PIN_CONTACT_ZONE3  7
+#define PIN_CONTACT_ZONE4   8
+#define PIN_CONTACT_ZONE5   9
+#define PIN_CONTACT_ZONE6   10
+#define PIN_CONTACT_ZONE7   11
+#define PIN_CONTACT_ZONE8    12
+#define PIN_CONTACT_ZONE9    13
+#define PIN_CONTACT_ZONE10   A1
+#define PIN_CONTACT_ZONE11   A2
+#define PIN_CONTACT_ZONE12   A3
+#define PIN_CONTACT_ZONE13   A4
+#define PIN_CONTACT_ZONE14   A5
 
 //******************************************************************************************
 //Arduino Setup() routine
@@ -111,20 +78,20 @@ void setup()
   //           DeviceType Tile name.  
   //******************************************************************************************
  
-  static st::IS_Motion sensor1(F("motion"), PIN_MOTION, HIGH, false);
-  static st::IS_Contact sensor2(F("kitchenWindow1"), PIN_CONTACT_KITCHEN_WINDOW1, LOW, true, 500);
-  static st::IS_Contact sensor3(F("kitchenWindow2"), PIN_CONTACT_KITCHEN_WINDOW2, LOW, true, 500);
-  static st::IS_Contact sensor4(F("kitchenWindow3"), PIN_CONTACT_KITCHEN_WINDOW3, LOW, true, 500);
-  static st::IS_Contact sensor5(F("masterWindow1"), PIN_CONTACT_MASTER_WINDOW1, LOW, true, 500);
-  static st::IS_Contact sensor6(F("masterWindow2"), PIN_CONTACT_MASTER_WINDOW2, LOW, true, 500);
-  static st::IS_Contact sensor7(F("officeWindow1"), PIN_CONTACT_OFFICE_WINDOW1, LOW, true, 500);
-  static st::IS_Contact sensor8(F("officeWindow2"), PIN_CONTACT_OFFICE_WINDOW2, LOW, true, 500);
-  static st::IS_Contact sensor9(F("guestWindow1"), PIN_CONTACT_GUEST_WINDOW1, LOW, true, 500);
-  static st::IS_Contact sensor10(F("guestWindow2"), PIN_CONTACT_GUEST_WINDOW2, LOW, true, 500);
-  static st::IS_Contact sensor11(F("frontDoor"), PIN_CONTACT_FRONT_DOOR, LOW, true, 500);
-  static st::IS_Contact sensor12(F("kitchenDoor"), PIN_CONTACT_KITCHEN_DOOR, LOW, true, 500);
-  static st::IS_Contact sensor13(F("garageDoor"), PIN_CONTACT_GARAGE_DOOR, LOW, true, 500);
-  static st::IS_Contact sensor14(F("bedroomDoor"), PIN_CONTACT_BEDROOM_DOOR, LOW, true, 500);
+  static st::IS_Contact sensor1(F("Zone1"), PIN_CONTACT_ZONE1, LOW, true, 500);
+  static st::IS_Contact sensor2(F("Zone2"), PIN_CONTACT_ZONE2, LOW, true, 500);
+  static st::IS_Contact sensor3(F("Zone3"), PIN_CONTACT_ZONE3, LOW, true, 500);
+  static st::IS_Contact sensor4(F("Zone4"), PIN_CONTACT_ZONE4, LOW, true, 500);
+  static st::IS_Contact sensor5(F("Zone5"), PIN_CONTACT_ZONE5, LOW, true, 500);
+  static st::IS_Contact sensor6(F("Zone6"), PIN_CONTACT_ZONE6, LOW, true, 500);
+  static st::IS_Contact sensor7(F("Zone7"), PIN_CONTACT_ZONE7, LOW, true, 500);
+  static st::IS_Contact sensor8(F("Zone8"), PIN_CONTACT_ZONE8, LOW, true, 500);
+  static st::IS_Contact sensor9(F("Zone9"), PIN_CONTACT_ZONE9, LOW, true, 500);
+  static st::IS_Contact sensor10(F("Zone10"), PIN_CONTACT_ZONE10, LOW, true, 500);
+  static st::IS_Contact sensor11(F("Zone11"), PIN_CONTACT_ZONE11, LOW, true, 500);
+  static st::IS_Contact sensor12(F("Zone12"), PIN_CONTACT_ZONE12, LOW, true, 500);
+  static st::IS_Contact sensor13(F("Zone13"), PIN_CONTACT_ZONE13, LOW, true, 500);
+  static st::IS_Contact sensor14(F("Zone14"), PIN_CONTACT_ZONE14, LOW, true, 500);
   
   //*****************************************************************************
   //  Configure debug print output from each main class 
