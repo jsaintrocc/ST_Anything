@@ -78,20 +78,20 @@ void setup()
   //           DeviceType Tile name.  
   //******************************************************************************************
  
-  static st::IS_Contact sensor1(F("Zone1"), PIN_CONTACT_ZONE1, LOW, true, 500);
-  static st::IS_Contact sensor2(F("Zone2"), PIN_CONTACT_ZONE2, LOW, true, 500);
-  static st::IS_Contact sensor3(F("Zone3"), PIN_CONTACT_ZONE3, LOW, true, 500);
-  static st::IS_Contact sensor4(F("Zone4"), PIN_CONTACT_ZONE4, LOW, true, 500);
-  static st::IS_Contact sensor5(F("Zone5"), PIN_CONTACT_ZONE5, LOW, true, 500);
-  static st::IS_Contact sensor6(F("Zone6"), PIN_CONTACT_ZONE6, LOW, true, 500);
-  static st::IS_Contact sensor7(F("Zone7"), PIN_CONTACT_ZONE7, LOW, true, 500);
-  static st::IS_Contact sensor8(F("Zone8"), PIN_CONTACT_ZONE8, LOW, true, 500);
-  static st::IS_Contact sensor9(F("Zone9"), PIN_CONTACT_ZONE9, LOW, true, 500);
-  static st::IS_Contact sensor10(F("Zone10"), PIN_CONTACT_ZONE10, LOW, true, 500);
-  static st::IS_Contact sensor11(F("Zone11"), PIN_CONTACT_ZONE11, LOW, true, 500);
-  static st::IS_Contact sensor12(F("Zone12"), PIN_CONTACT_ZONE12, LOW, true, 500);
-  static st::IS_Contact sensor13(F("Zone13"), PIN_CONTACT_ZONE13, LOW, true, 500);
-  static st::IS_Contact sensor14(F("Zone14"), PIN_CONTACT_ZONE14, LOW, true, 500);
+  static st::IS_Contact sensor1(F("zone1"), PIN_CONTACT_ZONE1, LOW, true, 500);
+  static st::IS_Contact sensor2(F("zone2"), PIN_CONTACT_ZONE2, LOW, true, 500);
+  static st::IS_Contact sensor3(F("zone3"), PIN_CONTACT_ZONE3, LOW, true, 500);
+  static st::IS_Contact sensor4(F("zone4"), PIN_CONTACT_ZONE4, LOW, true, 500);
+  static st::IS_Contact sensor5(F("zone5"), PIN_CONTACT_ZONE5, LOW, true, 500);
+  static st::IS_Contact sensor6(F("zone6"), PIN_CONTACT_ZONE6, LOW, true, 500);
+  static st::IS_Contact sensor7(F("zone7"), PIN_CONTACT_ZONE7, LOW, true, 500);
+  static st::IS_Contact sensor8(F("zone8"), PIN_CONTACT_ZONE8, LOW, true, 500);
+  static st::IS_Contact sensor9(F("zone9"), PIN_CONTACT_ZONE9, LOW, true, 500);
+  static st::IS_Contact sensor10(F("zone10"), PIN_CONTACT_ZONE10, LOW, true, 500);
+  static st::IS_Contact sensor11(F("zone11"), PIN_CONTACT_ZONE11, LOW, true, 500);
+  static st::IS_Contact sensor12(F("zone12"), PIN_CONTACT_ZONE12, LOW, true, 500);
+  static st::IS_Contact sensor13(F("zone13"), PIN_CONTACT_ZONE13, LOW, true, 500);
+  static st::IS_Contact sensor14(F("zone14"), PIN_CONTACT_ZONE14, LOW, true, 500);
   
   //*****************************************************************************
   //  Configure debug print output from each main class 
