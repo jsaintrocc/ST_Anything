@@ -54,14 +54,13 @@
 #define PIN_CONTACT_ZONE4   8
 #define PIN_CONTACT_ZONE5   9
 #define PIN_CONTACT_ZONE6   10
-#define PIN_CONTACT_ZONE7   11
-#define PIN_CONTACT_ZONE8    12
-#define PIN_CONTACT_ZONE9    13
-#define PIN_CONTACT_ZONE10   A1
-#define PIN_CONTACT_ZONE11   A2
-#define PIN_CONTACT_ZONE12   A3
-#define PIN_CONTACT_ZONE13   A4
-#define PIN_CONTACT_ZONE14   A5
+//Contact Pins for motion (PIR)
+#define PIN_CONTACT_PIR_ZONE1   11
+#define PIN_CONTACT_PIR_ZONE2    12
+#define PIN_CONTACT_PIR_ZONE3    13
+#define PIN_CONTACT_PIR_ZONE4   A0
+#define PIN_CONTACT_PIR_ZONE5   A1
+#define PIN_CONTACT_PIR_ZONE6   A2
 
 //******************************************************************************************
 //Arduino Setup() routine
@@ -84,14 +83,12 @@ void setup()
   static st::IS_Contact sensor4(F("zone4"), PIN_CONTACT_ZONE4, LOW, true, 500);
   static st::IS_Contact sensor5(F("zone5"), PIN_CONTACT_ZONE5, LOW, true, 500);
   static st::IS_Contact sensor6(F("zone6"), PIN_CONTACT_ZONE6, LOW, true, 500);
-  static st::IS_Contact sensor7(F("zone7"), PIN_CONTACT_ZONE7, LOW, true, 500);
-  static st::IS_Contact sensor8(F("zone8"), PIN_CONTACT_ZONE8, LOW, true, 500);
-  static st::IS_Contact sensor9(F("zone9"), PIN_CONTACT_ZONE9, LOW, true, 500);
-  static st::IS_Contact sensor10(F("zone10"), PIN_CONTACT_ZONE10, LOW, true, 500);
-  static st::IS_Contact sensor11(F("zone11"), PIN_CONTACT_ZONE11, LOW, true, 500);
-  static st::IS_Contact sensor12(F("zone12"), PIN_CONTACT_ZONE12, LOW, true, 500);
-  static st::IS_Contact sensor13(F("zone13"), PIN_CONTACT_ZONE13, LOW, true, 500);
-  static st::IS_Contact sensor14(F("zone14"), PIN_CONTACT_ZONE14, LOW, true, 500);
+  static st::IS_Contact sensor7(F("pirzone1"), PIN_CONTACT_PIR_ZONE1, LOW, true, 500);
+  static st::IS_Contact sensor8(F("pirzone2"), PIN_CONTACT_PIR_ZONE2, LOW, true, 500);
+  static st::IS_Contact sensor9(F("pirzone3"), PIN_CONTACT_PIR_ZONE3, LOW, true, 500);
+  static st::IS_Contact sensor10(F("pirzone4"), PIN_CONTACT_PIR_ZONE4, LOW, true, 500);
+  static st::IS_Contact sensor11(F("pirzone5"), PIN_CONTACT_PIR_ZONE5, LOW, true, 500);
+  static st::IS_Contact sensor12(F("pirzone6"), PIN_CONTACT_PIR_ZONE6, LOW, true, 500);
   
   //*****************************************************************************
   //  Configure debug print output from each main class 
@@ -122,9 +119,7 @@ void setup()
   st::Everything::addSensor(&sensor10); 
   st::Everything::addSensor(&sensor11); 
   st::Everything::addSensor(&sensor12);
-  st::Everything::addSensor(&sensor13); 
-  st::Everything::addSensor(&sensor14);
-  
+    
   //*****************************************************************************
   //Initialize each of the devices which were added to the Everything Class
   //*****************************************************************************
